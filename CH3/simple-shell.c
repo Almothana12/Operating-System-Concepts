@@ -1,10 +1,18 @@
+/**
+ * From the book:
+ * 
+ * After reading user input, the steps are:
+ * (1) fork a child process
+ * (2) the child process will invoke execvp()
+ * (3) if command included &, parent will invoke wait()
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
 
 #define MAX_LINE    80 /* 80 chars per line, per command */
 #define TRUE 1
@@ -17,33 +25,36 @@ int main(void)
 	int should_wait = FALSE; /* will be be TRUE if user input is "(command) &" */ 
     
     while(should_run) {
+        
         printf("osh>");
         
         char command[MAX_LINE];
-        scanf(" %[^\n]",command);
+        scanf(" %[^\n]",command); /* idk what " %[^\n]" does but it works :D */
         fflush(stdout);
         
-        
-        
         char* temp = (char*) malloc(MAX_LINE*sizeof(char*));
-        int j=0; // counter of temp
+        int j=0; /* counter of temp */
         int i;
         int upper=0;
-        for(i=0; command[i]!='\0'; i++) {
-            if((int)command[i] == ' ') {
+        /* split command into words */
+        for(i=0; command[i]!='\0'; i++) { /* iterate command char by char */
+            if((int)command[i] == ' ') { /* when you encounter a space, put the word into args */
                 args[upper] = temp;
                 upper++;
-                temp = (char*) malloc(MAX_LINE*sizeof(char*));
-                j=0;
+                temp = (char*) malloc(MAX_LINE*sizeof(char*)); /* reset temp */
+                j=0; /* reset temp counter */
             }
             else {
                 temp[j++] = command[i];
             }
         }
+        
         if (temp[0] == '&')
             should_wait = TRUE;
-        args[upper++] = temp;
-        args[upper] = NULL;
+        else
+            args[upper++] = temp; /* put the last word into args */
+            
+        args[upper] = NULL; /* is this really necessary ?? */
         
         /*
         for(i=0; args[i] != NULL; i++){
@@ -51,8 +62,7 @@ int main(void)
         }
         */
 
-        pid_t pid;
-        pid = fork();
+        pid_t pid = fork();
         
         if(pid < 0) {
             printf("ERROR FORKING CHILD");
@@ -67,15 +77,7 @@ int main(void)
         }
 
     }
-        
-        /**
-         * After reading user input, the steps are:
-         * (1) fork a child process
-         * (2) the child process will invoke execvp()
-         * (3) if command included &, parent will invoke wait()
-         */
-    
-    
     
 	return 0;
 }
+
