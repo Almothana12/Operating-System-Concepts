@@ -1,3 +1,5 @@
+/* this program reads a sudoku solution from the file "input.txt" and validates if it's correct or not by using multi-threading */
+
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
