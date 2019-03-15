@@ -1,6 +1,7 @@
-/**
- * From the book:
- * 
+/* 
+ * This project consists of designing a C program to serve as a shell interface that accepts 
+ * user commands and then executes each command in a separate process
+ *
  * After reading user input, the steps are:
  * (1) fork a child process
  * (2) the child process will invoke execvp()
@@ -24,32 +25,33 @@ void execute_command(char* [MAX_LINE/2 + 1], int);
 
 int main(void) 
 {
+
+	
 	char *args[MAX_LINE/2 + 1];	/* command line (of 80) has max of 40 arguments */
 	char command[MAX_LINE];     /* the command that the user will enter */
-    int should_run = TRUE;
+   	int should_run = TRUE;
 	int should_wait = FALSE; /* will be be TRUE if user input is "(command) &" */ 
 
-    History* history = (History*) calloc(1, sizeof(History)); /* holds last 10 commands */
+    	History* history = (History*) calloc(1, sizeof(History)); /* holds last 10 commands */
     
-    while(should_run) 
-    {
-        read_command(command);
-
-        if(strcmp(command, "history") == 0) /* if input is "history" */
-        {
-            display_history(history);
-        }
-        else if(strcmp(command, "exit") == 0)
-        {
-            return 0;
-        }
-        else
-        {
-            add_to_history(history, command); /* add command to history */
-            process_command(command, args, &should_wait); /* process the command to seperate strings */
-            execute_command(args, should_wait);
-        }
-    }
+    	while(should_run) 
+   	{
+        	read_command(command);
+        	if(strcmp(command, "history") == 0) /* if input is "history" */
+        	{
+            		display_history(history);
+        	}
+        	else if(strcmp(command, "exit") == 0)
+        	{
+            		return 0;
+        	}
+        	else
+        	{
+            		add_to_history(history, command); /* add command to history */
+            		process_command(command, args, &should_wait); /* process the command to seperate strings */
+            		execute_command(args, should_wait);
+        	}
+    	}
 	return -1;
 }
 
